@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To-Do App</title>
+    <style>
+        body {
+            
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: rgb(250, 246, 241);
+        }
+        h1 {
+            text-align: center;
+            font-size: 55px;
+            color: rgb(58, 58, 223);
+            font-family:'Times New Roman', Times, serif;
+        }
+        h2{
+            margin-left: 20%;
+            font-size: 35px;
+            color: rgb(8, 8, 8);
+            font-family: 'Times New Roman', Times, serif;
+            margin-top: 4%;
+            text-shadow: #0000FF;
+        }
+        input[type="text"] {
+            width: 60%;
+            height: 40px;
+            padding: 20px;
+            border: 5px solid rgb(49, 49, 231);
+            border-radius: 5px;
+            margin-top: 5%;
+            margin-left: 20%;
+        }
+        button {
+            margin-top: 5px;
+            padding: 5px 10px;
+            cursor: pointer;
+            background-color: #455de9;
+            color: white;
+            font-size: medium;
+        }
+        .task-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 5px 10px;
+            border-bottom: 1px solid #110e0e;
+            font-size: 20px;
+        }
+        .completed-task {
+            text-decoration: line-through;
+            color: #080707;
+            font-size: 20px;
+            border-bottom: 1px solid #110e0e;
+        }
+    </style>
+</head>
+<body>
+    <h1>To-Do App</h1>
+        <input type="text" id="taskInput" placeholder="Add new task...">
+        <button onclick="addTask()">Add Task</button>
+    </div>
+    <div>
+        <h2>Pending Tasks</h2>
+        <ul id="pendingTasks"></ul>
+    </div>
+    <div>
+        <h2>Completed Tasks</h2>
+        <ul id="completedTasks"></ul>
+    </div>
+    <script>
+        const pendingTasksList = document.getElementById("pendingTasks");
+        const completedTasksList = document.getElementById("completedTasks");
+
+        function addTask() {
+            const taskInput = document.getElementById("taskInput");
+            const taskText = taskInput.value.trim();
+            taskInput.value = "";
+
+            if (!taskText) {
+                alert("Task description cannot be empty.");
+                return;
+            }
+
+            const taskItem = createTaskItem(taskText, new Date());
+            pendingTasksList.appendChild(taskItem);
+        }
+
+        function createTaskItem(taskText, timestamp) {
+            const taskItem = document.createElement("li");
+            taskItem.classList.add("task-item");
+
+            const taskDescription = document.createElement("span");
+            taskDescription.textContent = taskText;
+
+            const taskTimestamp = document.createElement("span");
+            taskTimestamp.textContent = formatTimestamp(timestamp);
+            taskTimestamp.style.marginRight = "10px";
+
+            const completeButton = document.createElement("button");
+            completeButton.textContent = "Complete";
+            completeButton.onclick = function () {
+                completeTask(taskItem);
+            };
+
+            const editButton = document.createElement("button");
+            editButton.textContent = "Edit";
+            editButton.onclick = function () {
+                editTask(taskItem, taskDescription, taskText);
+            };
+
+            const deleteButton = document.createElement("button");
+            deleteButton.textContent = "Delete";
+            deleteButton.onclick = function () {
+                deleteTask(taskItem);
+            };
+
+            taskItem.appendChild(taskTimestamp);
+            taskItem.appendChild(taskDescription);
+            taskItem.appendChild(completeButton);
+            taskItem.appendChild(editButton);
+            taskItem.appendChild(deleteButton);
+
+            return taskItem;
+        }
+
+        function formatTimestamp(timestamp) {
+            const options = { month: "short", day: "numeric", hour: "numeric", minute: "numeric" };
+            return new Intl.DateTimeFormat("en-US", options).format(timestamp);
+        }
+
+        function completeTask(taskItem) {
+            taskItem.classList.toggle("completed-task");
+            completedTasksList.appendChild(taskItem);
+        }
+
+        function editTask(taskItem, taskDescription, currentText) {
+            const newText = prompt("Edit task:", currentText);
+            if (newText !== null) {
+                taskDescription.textContent = newText.trim();
+            }
+        }
+
+        function deleteTask(taskItem) {
+            taskItem.remove();
+        }
+    </script>
+</body>
+</html>
